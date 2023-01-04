@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2023-01-03 15:03:57
- * @LastEditTime: 2023-01-03 16:27:06
+ * @LastEditTime: 2023-01-04 15:36:04
  * @LastEditors: kun.xu
  */
 import request from '@/utils/axiosReq'
@@ -23,7 +23,7 @@ export function getRoles(data) {
    */
  export function getPermissions() {
   return request({
-    url: '/permissions',
+    url: 'api/permissions',
     method: 'get'
   })
 }

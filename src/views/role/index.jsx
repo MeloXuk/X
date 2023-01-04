@@ -1,14 +1,17 @@
 import React, { useEffect,useState } from 'react'
-import { Button, Form, Input, Col, Row, Table,Space } from 'antd'
-import { getRoles } from '@/api/role'
+import { Button, Form, Input, Col, Row, Table, Space,Modal } from 'antd'
+import Edit from './components/Edit'
+import { getRoles,getPermissions } from '@/api/role'
 import "./role.scss"
 export default function Role() {
   const [form] = Form.useForm();
   const [roleList,setRoleList] = useState([])
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [treeData,setTreeData] = useState([])
+  const [visible,setVisible] = useState(false)
+  const [rowData,setRowData] = useState([])
+  const [title,setTitle] = useState('')
   const [pagination, setPagination] = useState({
-    // sizeCanChange: true,
-    // showTotal: true,
     total: null,
     pageSize: null,
     current: null,
@@ -25,11 +28,21 @@ export default function Role() {
          >共{total}条数据</span>
      )
   }
-    // pageSizeChangeResetCurrent: true
-    // showQuickJumper:'
   });
   const onFinish = (values)=>{
     console.log(values,'values');
+  }
+  const edit = (record) =>{
+    console.log(record,'record');
+    setVisible(true)
+    setRowData(record)
+    setTitle('编辑')
+  }
+  const handleCancel = () =>{
+    setVisible(false)
+  }
+  const showDel = (id) =>{
+    console.log(id,'id');
   }
   const columns = [
     {
@@ -51,7 +64,6 @@ export default function Role() {
       title: '操作',
       dataIndex: 'op',
       align:'center',
-
       render: (_, record) =>
         record.id !== 1?
         (
@@ -70,10 +82,40 @@ export default function Role() {
   const reset = ()=>{
     form.resetFields()
   }
+  const add = ()=>{
+    setVisible(true)
+    setTitle('新增')
+  }
+  const getPermissionsList = async() =>{
+    const res = await getPermissions()
+    const newData = res.data.filter(item => item.label !== '用户信息')
+    // }
+    const parentMap = new Map()
+    // 第一层节点
+    const parentNodes = newData.filter(node => !node.parent)
+    parentNodes.forEach(node => {
+      node.children = []
+      parentMap.set(node.pid, node.children)
+      // 首页默认不可编辑
+      if (node.pid === 'p_0_0') {
+        node.disabled = true
+      }
+    })
+    // 第二层节点
+    newData.forEach(node => {
+      const parent = node.parent
+      const arr = parentMap.get(parent)
+      node.key = node.pid
+      node.title = node.label
+      if (arr) {
+        arr.push(node)
+      }
+    })
+    setTreeData(parentNodes)
+}
   const getRoleList = async (data) =>{
     const res =await getRoles(data)
     setRoleList(res.data.data)
-    console.log(roleList,'roleList');
     setPagination({
       ...pagination,
       pageSize:res.data.limit,
@@ -85,15 +127,16 @@ export default function Role() {
   }
   const onChangeTable = async (pagination) =>{
     const { current, pageSize } = pagination;
-    console.log(current,'current');
-    console.log(pageSize,'pageSize');
     setLoading(true);
     await getRoleList({page:current,limit:pageSize})
     setLoading(false);
   }
   useEffect(()=>{
     getRoleList({page:1,limit:10})
+    getPermissionsList()
   },[])
+
+
   return (
     <div>
       <Form
@@ -119,7 +162,7 @@ export default function Role() {
               <Button type="outline"  onClick={reset} className="btn">
                 重置
               </Button>
-              <Button type="primary" className="btn">
+              <Button type="primary" className="btn" onClick={add}>
                 新增
               </Button>
             </Form.Item>
@@ -135,6 +178,14 @@ export default function Role() {
         pagination={pagination}
         onChange={onChangeTable}
       />
+      <Edit
+        visible={visible}
+        handleCancel={handleCancel}
+        title={title}
+        rowData={rowData}
+        treeData={treeData}
+      >
+      </Edit>
     </div>
   )
 }
