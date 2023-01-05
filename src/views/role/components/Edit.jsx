@@ -2,61 +2,74 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2023-01-04 14:02:19
- * @LastEditTime: 2023-01-04 17:52:41
+ * @LastEditTime: 2023-01-05 16:48:50
  * @LastEditors: kun.xu
  */
-import React, { useEffect, useState,useMemo } from 'react';
-import { Modal,Form, Input,Checkbox,Button,Tree } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Modal, Form, Input, Checkbox, Tree } from 'antd';
+import { addRole, updateRole } from '@/api/role'
 
 export default function RoleEdit(props) {
-    const { visible,handleCancel,title,treeData,rowData } = props
+    const { visible,handleCancel,title,treeData,rowData,getList } = props
+    const [checkedKeys,setCheckedKeys] = useState([])
+    const [defaultExpanded,setDefaultExpanded] = useState([])
     const [form] = Form.useForm();
     const onOk = async ()=>{
         const values = await form.validateFields()
-        console.log(values,'111');
+        const roleList = 'p_0_0,'+checkedKeys.toString()+',p_1_3'
+        const formData = {...values,pids:roleList,id:rowData.id}
+        if(title==='新增'){
+          await addRole(formData)
+          getList()
+        }
+        if(title==='编辑'){
+          await updateRole(formData)
+          getList()
+        }
     }
-    const defaultSelected = useMemo(()=>{
-        let selected = []
-        if (rowData.pids) {
-          selected = rowData.pids.replace(/ /g, '').split(',')
+
+    const onCheck = (checkedKeysValue) => {
+      setCheckedKeys(checkedKeysValue);
+    }
+
+    const handleTree = ()=>{
+      let selected = []
+      if (rowData.pids) {
+        selected = rowData.pids.replace(/ /g, '').split(',').filter(item=>item!=='p_1_3')
+      }
+      if (!selected.includes('p_0_0')) {
+        selected.push('p_0_0')
+      }
+      setCheckedKeys(selected)
+      const arr = []
+      const set = new Set(selected)
+      treeData.forEach(node => {
+        const children = node.children || []
+        const hasSelectedChild = children.find(subNode => {
+          return set.has(subNode.pid)
+        })
+        if (hasSelectedChild) {
+          arr.push(node.pid)
         }
-        if (!selected.includes('p_0_0')) {
-          selected.push('p_0_0')
-        }
-        console.log(selected,'selected');
-        return selected
+      })
+      setDefaultExpanded(arr)
+    }
+
+    useEffect(()=>{
+      if(title==='编辑'){
+        handleTree()
+        form.setFieldsValue({...rowData,role:checkedKeys,needIP:rowData.needIP})
+      }
+      if(title==='新增'){
+        setCheckedKeys([])
+        setDefaultExpanded([])
+        form.setFieldsValue({role:[],needIP:false,name:''})
+      }
     },[rowData])
-    // const defaultExpanded=useMemo(()=>{
 
-    //         const arr = []
-    //         console.log(treeData,'defaultSelected1111');
-    //         const set = new Set(defaultSelected)
-    //         console.log(set,'set');
-    //         treeData.forEach(node => {
-    //           const children = node.children || []
-    //           // 全选的不展开level
-    //           if (set.has(node.pid)) {
-    //             console.log(3333);
-    //             return
-    //           }
-
-    //           console.log(children, 'children')
-    //           const hasSelectedChild = children.find(subNode => {
-    //             console.log(set.has(subNode.pid), 'subNode')
-    //             return set.has(subNode.pid)
-    //           })
-    //           console.log(hasSelectedChild,'hasSelectedChild');
-    //           if (hasSelectedChild) {
-    //             console.log(111);
-    //             arr.push(node.pid)
-    //           }
-    //         })
-    //         return arr
-
-    // },[treeData,defaultSelected])
   return (
     <div>
-      <Modal title={title} visible={visible} onCancel={handleCancel} onOk={onOk}>
+      <Modal title={title} visible={visible} onCancel={handleCancel} onOk={onOk} destroyOnClose>
         <Form
           form={form}
           labelCol={{style: { flexBasis: 90 }}}
@@ -69,16 +82,15 @@ export default function RoleEdit(props) {
             <Tree
               checkable
               treeData={treeData}
-              defaultCheckedKeys={defaultSelected}
-              // defaultExpandedKeys={defaultExpanded}
+              checkedKeys={checkedKeys}
+              expandedKeys={defaultExpanded}
+              onCheck={onCheck}
             />
           </Form.Item>
           <Form.Item label="功能配置" required name="needIP" valuePropName="checked">
             <Checkbox>IP验证</Checkbox>
           </Form.Item>
         </Form>
-        <div>{defaultSelected}</div>
-        {/* <div>{defaultExpanded}</div> */}
       </Modal>
     </div>
   );

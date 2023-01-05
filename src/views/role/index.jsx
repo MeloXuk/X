@@ -1,7 +1,7 @@
-import React, { useEffect,useState } from 'react'
-import { Button, Form, Input, Col, Row, Table, Space,Modal } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Input, Col, Row, Table, Space } from 'antd'
 import Edit from './components/Edit'
-import { getRoles,getPermissions } from '@/api/role'
+import { getRoles, getPermissions, deleteRole } from '@/api/role'
 import "./role.scss"
 export default function Role() {
   const [form] = Form.useForm();
@@ -28,22 +28,8 @@ export default function Role() {
          >共{total}条数据</span>
      )
   }
-  });
-  const onFinish = (values)=>{
-    console.log(values,'values');
-  }
-  const edit = (record) =>{
-    console.log(record,'record');
-    setVisible(true)
-    setRowData(record)
-    setTitle('编辑')
-  }
-  const handleCancel = () =>{
-    setVisible(false)
-  }
-  const showDel = (id) =>{
-    console.log(id,'id');
-  }
+  })
+
   const columns = [
     {
       title: '序号',
@@ -71,37 +57,60 @@ export default function Role() {
             <Button onClick={()=>edit(record)} type="primary" status="primary">
               编辑
              </Button>
-            <Button onClick={() => showDel(record.id)} type="primary" status="danger">
+            <Button onClick={() => del(record.id)} type="danger" status="danger">
               删除
             </Button>
           </Space>
         ):
         (<Space></Space>)
     }
-  ];
+  ]
+
+  const onFinish = (values)=>{
+    getRoleList({...values,page:1,limit:10})
+  }
+
+  const edit = (record) =>{
+    setVisible(true)
+    setRowData(record)
+    setTitle('编辑')
+  }
+
+  const handleCancel = () =>{
+    setVisible(false)
+  }
+
+  const del = async (id) =>{
+    await deleteRole({id:id})
+    const totalPage = Math.ceil((pagination.total - 1) / pagination.pageSize) // 总页数
+    pagination.current = pagination.current > totalPage ? totalPage : pagination.current
+    pagination.current = pagination.current < 1 ? 1 : pagination.current
+    getRoleList({page:pagination.current,limit:pagination.pageSize})
+  }
+
   const reset = ()=>{
     form.resetFields()
+    getRoleList({page:1,limit:10})
   }
+
   const add = ()=>{
     setVisible(true)
     setTitle('新增')
+    setRowData([])
   }
+
   const getPermissionsList = async() =>{
     const res = await getPermissions()
     const newData = res.data.filter(item => item.label !== '用户信息')
-    // }
     const parentMap = new Map()
-    // 第一层节点
     const parentNodes = newData.filter(node => !node.parent)
     parentNodes.forEach(node => {
       node.children = []
       parentMap.set(node.pid, node.children)
-      // 首页默认不可编辑
       if (node.pid === 'p_0_0') {
         node.disabled = true
       }
     })
-    // 第二层节点
     newData.forEach(node => {
       const parent = node.parent
       const arr = parentMap.get(parent)
@@ -112,7 +121,8 @@ export default function Role() {
       }
     })
     setTreeData(parentNodes)
-}
+  }
+
   const getRoleList = async (data) =>{
     const res =await getRoles(data)
     setRoleList(res.data.data)
@@ -125,17 +135,32 @@ export default function Role() {
       showQuickJumper: true
     })
   }
+
+  const getList =()=>{
+    let currentPage
+    if(title==='新增'){
+      const currentSize = pagination.total%pagination.pageSize
+      currentPage = Math.ceil(pagination.total/pagination.pageSize)
+      if(currentSize===0){
+        currentPage = currentPage+1
+      }
+    }else{
+      currentPage=pagination.current
+    }
+    getRoleList({page:currentPage,limit:pagination.pageSize})
+    setVisible(false)
+  }
+
   const onChangeTable = async (pagination) =>{
-    const { current, pageSize } = pagination;
-    setLoading(true);
-    await getRoleList({page:current,limit:pageSize})
+    setLoading(true)
+    await getRoleList({page:pagination.current,limit:pagination.pageSize})
     setLoading(false);
   }
+
   useEffect(()=>{
     getRoleList({page:1,limit:10})
     getPermissionsList()
   },[])
-
 
   return (
     <div>
@@ -150,7 +175,7 @@ export default function Role() {
       >
         <Row>
           <Col span={10}>
-            <Form.Item label="角色名称" name="name" rules={[{ required: true }]} >
+            <Form.Item label="角色名称" name="name">
               <Input placeholder="请输入角色名称" />
             </Form.Item>
           </Col>
@@ -184,6 +209,7 @@ export default function Role() {
         title={title}
         rowData={rowData}
         treeData={treeData}
+        getList={getList}
       >
       </Edit>
     </div>

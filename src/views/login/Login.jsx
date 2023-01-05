@@ -32,8 +32,8 @@ function Login(props) {
       <Form
         autoComplete="off"
         className="widthPx-340"
-        // initialValues={{ name: 'admin', passwd: 'YTEyMzQ1Ng==' }}
-        initialValues={{ name: 'asdfg', passwd: 'YTEyMzQ1NiE=' }}
+        initialValues={{ name: 'admin', passwd: 'YTEyMzQ1Ng==' }}
+        // initialValues={{ name: 'asdfg', passwd: 'YTEyMzQ1NiE=' }}
         // initialValues={{ name: 'qwert', passwd: 'YTEyMzQ1NiE=' }}
         labelAlign={'left'}
         name="basic"

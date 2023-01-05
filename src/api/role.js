@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2023-01-03 15:03:57
- * @LastEditTime: 2023-01-04 15:36:04
+ * @LastEditTime: 2023-01-05 16:18:32
  * @LastEditors: kun.xu
  */
 import request from '@/utils/axiosReq'
@@ -34,9 +34,10 @@ export function getRoles(data) {
  */
  export function deleteRole(data) {
   return request({
-    url: '/roles',
+    url: 'api/roles',
     method: 'delete',
-    params: data
+    data: data,
+    isParams: true
   })
 }
 
@@ -51,7 +52,7 @@ export function getRoles(data) {
  */
  export function addRole(data) {
   return request({
-    url: '/roles',
+    url: 'api/roles',
     method: 'post',
     data
   })
@@ -67,7 +68,7 @@ export function getRoles(data) {
  */
  export function updateRole(data) {
   return request({
-    url: `/roles`,
+    url: `api/roles`,
     method: 'patch',
     data
   })
