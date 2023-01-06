@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2023-01-03 09:10:25
+ * @LastEditTime: 2023-01-06 14:59:51
  * @LastEditors: kun.xu
  */
 // eslint-disable-next-line no-use-before-define
@@ -31,7 +31,6 @@ function Navbar(props) {
   useEffect(()=>{
     setUsername(store.getState().user.name)
   })
-  console.log(store.getState().user.name,'getState')
   const menu = () => (
     <Menu>
       <Menu.Item key="0">
@@ -62,7 +61,8 @@ function Navbar(props) {
       </div>
       {/* 下拉退出登录*/}
       <div className="mr-1">
-        <Dropdown className="rowSE" overlay={menu} trigger={['click']}>
+        {/* <Dropdown className="rowSE" overlay={menu} trigger={['click']}> */}
+        <Dropdown className="rowSE" menu={menu} trigger={['click']}>
           {/* <CaretDownOutlined className="mlPx-6 font-sizePx12" style={{ color: '#000' }} /> */}
           <a className="ant-dropdown-link avatar-wrapper" onClick={(e) => e.preventDefault()}>
           <span className="userName">{username}</span>

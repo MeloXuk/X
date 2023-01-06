@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Col, Row, Table, Space } from 'antd'
+import { Button, Form, Input, Col, Row, Table, Space, notification, Modal } from 'antd'
+import { CheckCircleTwoTone, ExclamationCircleFilled  } from '@ant-design/icons';
 import Edit from './components/Edit'
 import { getRoles, getPermissions, deleteRole } from '@/api/role'
 import "./role.scss"
 export default function Role() {
   const [form] = Form.useForm();
+  const { confirm } = Modal;
   const [roleList,setRoleList] = useState([])
   const [loading, setLoading] = useState(false)
   const [treeData,setTreeData] = useState([])
@@ -54,10 +56,10 @@ export default function Role() {
         record.id !== 1?
         (
           <Space>
-            <Button onClick={()=>edit(record)} type="primary" status="primary">
+            <Button onClick={()=>edit(record)} type="primary">
               编辑
              </Button>
-            <Button onClick={() => del(record.id)} type="danger" status="danger">
+            <Button onClick={() => del(record.id)} type="primary" danger>
               删除
             </Button>
           </Space>
@@ -80,8 +82,29 @@ export default function Role() {
     setVisible(false)
   }
 
-  const del = async (id) =>{
+  const del =  (id) =>{
+    confirm({
+      title: '提示',
+      icon: <ExclamationCircleFilled />,
+      content: '是否删除该角色',
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      onOk() {
+        delRole(id)
+      }
+    })
+  }
+
+  const delRole =async (id)=>{
     await deleteRole({id:id})
+    notification.open({
+      message: '成功提示',
+      description:
+        '删除成功',
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      duration:1
+    })
     const totalPage = Math.ceil((pagination.total - 1) / pagination.pageSize) // 总页数
     pagination.current = pagination.current > totalPage ? totalPage : pagination.current
     pagination.current = pagination.current < 1 ? 1 : pagination.current
@@ -184,7 +207,7 @@ export default function Role() {
               <Button type="primary" htmlType="submit" className="btn">
                 查询
               </Button>
-              <Button type="outline"  onClick={reset} className="btn">
+              <Button onClick={reset} className="btn">
                 重置
               </Button>
               <Button type="primary" className="btn" onClick={add}>

@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2022-12-21 13:13:25
+ * @LastEditTime: 2023-01-06 14:51:49
  * @LastEditors: kun.xu
  */
 /* react redux */
@@ -13,14 +13,15 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group'
 /*引入本页样式*/
 import './Logo.scss'
 import settings from '@/settings'
+import logo from '@/assets/react.png'
 function Logo(props) {
   let title = settings.title
-  let logo = settings.logo
+  // let logo = settings.logo
   const renderImageTitle = () => {
     if (props.opened) {
       return (
         <div className="sidebar-logo-link" key={'a'}>
-          {/* <img className="sidebar-logo" src={logo} /> */}
+          <img className="sidebar-logo" src={logo} />
           <h1 className="sidebar-title">{title}</h1>
         </div>
       )

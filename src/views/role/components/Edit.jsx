@@ -2,11 +2,12 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2023-01-04 14:02:19
- * @LastEditTime: 2023-01-05 16:48:50
+ * @LastEditTime: 2023-01-06 09:23:39
  * @LastEditors: kun.xu
  */
+import { CheckCircleTwoTone } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { Modal, Form, Input, Checkbox, Tree } from 'antd';
+import { Modal, Form, Input, Checkbox, Tree, notification  } from 'antd';
 import { addRole, updateRole } from '@/api/role'
 
 export default function RoleEdit(props) {
@@ -21,10 +22,24 @@ export default function RoleEdit(props) {
         if(title==='新增'){
           await addRole(formData)
           getList()
+          notification.open({
+            message: '成功提示',
+            description:
+              '新增成功',
+            icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+            duration:1
+          })
         }
         if(title==='编辑'){
           await updateRole(formData)
           getList()
+          notification.open({
+            message: '成功提示',
+            description:
+              '编辑成功',
+            icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+            duration:1
+          })
         }
     }
 
@@ -69,7 +84,7 @@ export default function RoleEdit(props) {
 
   return (
     <div>
-      <Modal title={title} visible={visible} onCancel={handleCancel} onOk={onOk} destroyOnClose>
+      <Modal title={title} open={visible} onCancel={handleCancel} onOk={onOk} destroyOnClose>
         <Form
           form={form}
           labelCol={{style: { flexBasis: 90 }}}

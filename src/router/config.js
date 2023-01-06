@@ -96,7 +96,7 @@ export const asyncRouters = [
         name: 'Home',
         meta: {
           title: '首页',
-          icon: 'el-icon-s-home',
+          icon: 'home',
           affix: true,
           permission: 'p_0_0'
         }
@@ -106,7 +106,7 @@ export const asyncRouters = [
   {
     path: '/sys-account-manage',
     redirect: 'noRedirect',
-    meta: { title: '系统账户管理', icon: 'el-icon-user-solid', breadcrumb: true, permission: 'p_1_0' },
+    meta: { title: '系统账户管理', icon: 'sysUser', breadcrumb: true, permission: 'p_1_0' },
     alwaysShow: true,
     children:
     [
@@ -127,7 +127,7 @@ export const asyncRouters = [
   {
     path: '/system-monitoring',
     redirect: 'noRedirect',
-    meta: { title: '系统监控', icon: 'el-icon-phone-outline', breadcrumb: true, permission: 'p_2_0' },
+    meta: { title: '系统监控', icon: 'monitor', breadcrumb: true, permission: 'p_2_0' },
     alwaysShow: true,
     children:
     [
@@ -187,7 +187,7 @@ export const asyncRouters = [
     redirect: 'noRedirect',
     meta: {
       title: '系统配置',
-      icon: 'el-icon-s-tools',
+      icon: 'configSetting',
       breadcrumb: true,
       permission: 'p_6_0'
     },
@@ -204,7 +204,7 @@ export const asyncRouters = [
   {
     path: '/operator',
     redirect: 'noRedirect',
-    meta: { title: '用户管理', icon: 'el-icon-s-check', breadcrumb: true, permission: 'p_3_0' },
+    meta: { title: '用户管理', icon: 'user', breadcrumb: true, permission: 'p_3_0' },
     alwaysShow: true,
     children:
     [
@@ -225,7 +225,7 @@ export const asyncRouters = [
   {
     path: '/data-report',
     redirect: 'noRedirect',
-    meta: { title: '数据报表', icon: 'el-icon-s-data', breadcrumb: true, permission: 'p_4_0' },
+    meta: { title: '数据报表', icon: 'chart', breadcrumb: true, permission: 'p_4_0' },
     alwaysShow: true,
     children:
     [
@@ -252,7 +252,7 @@ export const asyncRouters = [
   {
     path: '/log-management',
     redirect: 'noRedirect',
-    meta: { title: '日志管理', icon: 'el-icon-document-copy', breadcrumb: true, permission: 'p_5_0' },
+    meta: { title: '日志管理', icon: 'log', breadcrumb: true, permission: 'p_5_0' },
     alwaysShow: true,
     children:
     [

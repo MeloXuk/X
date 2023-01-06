@@ -8,7 +8,6 @@ const service = axios.create({})
 // 请求拦截
 service.interceptors.request.use(
   (req) => {
-    // console.log('req', req)
     // token配置
     req.headers['Authorization'] =`Bearer `+ getToken()
     /* 下载文件*/

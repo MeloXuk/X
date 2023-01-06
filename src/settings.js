@@ -2,12 +2,12 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2022-12-21 13:12:30
+ * @LastEditTime: 2023-01-06 14:48:56
  * @LastEditors: kun.xu
  */
 const setting = {
   title: 'X',
-  logo: '',
+  logo: '@/assets/react.png',
 
   /**
    * @type {boolean} true | false

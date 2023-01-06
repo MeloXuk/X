@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2022-12-21 11:05:52
+ * @LastEditTime: 2023-01-06 15:12:37
  * @LastEditors: kun.xu
  */
 // eslint-disable-next-line no-use-before-define
@@ -19,28 +19,28 @@ import { isExternal } from '@/utils/validate'
 function menuItem(props) {
   /*侧边栏默认选中和展开*/
   const pid = store.getState().user.role
-    const filterAsyncRoutes=(routes, permissions)=> {
-      const res = []
-      routes.forEach(route => {
-        route = { ...route }
-        const children = route.children
-        if (!route.meta || children) {
-          if (children) {
-            const accessedChild = filterAsyncRoutes(children, permissions)
-            if (accessedChild.length) {
-              res.push(route)
-              route.children = accessedChild
-            }
-          } else {
+  const filterAsyncRoutes=(routes, permissions)=> {
+    const res = []
+    routes.forEach(route => {
+      route = { ...route }
+      const children = route.children
+      if (!route.meta || children) {
+        if (children) {
+          const accessedChild = filterAsyncRoutes(children, permissions)
+          if (accessedChild.length) {
             res.push(route)
+            route.children = accessedChild
           }
-        } else if (permissions.includes(route.meta.permission)) {
+        } else {
           res.push(route)
         }
-      })
-      return res
-    }
-    const arr = filterAsyncRoutes(asyncRouters,pid)
+      } else if (permissions.includes(route.meta.permission)) {
+        res.push(route)
+      }
+    })
+    return res
+  }
+  const arr = filterAsyncRoutes(asyncRouters,pid)
   let location = useLocation()
   let activeMenu = location.pathname
   let pathNameArr = location.pathname.substring(1).split('/')
