@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2023-01-03 09:03:02
+ * @LastEditTime: 2023-01-10 16:59:25
  * @LastEditors: kun.xu
  */
 // eslint-disable-next-line no-use-before-define
@@ -74,9 +74,7 @@ function RenderRouterHook() {
   useEffect(() => {
     renderRouterFunc(asyncRouters, '/')
     // setRes([...arr])
-    // console.log(res,'');
   }, [])
-  // console.log(routerArr,'routerArr');
   return (
     <div>
 

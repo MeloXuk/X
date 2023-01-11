@@ -2,22 +2,30 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2023-01-06 15:12:37
+ * @LastEditTime: 2023-01-10 16:51:39
  * @LastEditors: kun.xu
  */
 // eslint-disable-next-line no-use-before-define
-import React from 'react'
+import React, { useState }  from 'react'
 import { connect } from 'react-redux'
-import { Link, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { asyncRouters } from '@/router/config'
 import { Menu } from 'antd'
 import store from '@/store'
-const { SubMenu } = Menu
 import Icon from './Icon'
-import path from 'path'
-import { isExternal } from '@/utils/validate'
 function menuItem(props) {
   /*侧边栏默认选中和展开*/
+  const rootSubmenuKeys = ['/sys-account-manage', '/system-monitoring', '/system-config','/operator','/data-report','/log-management'];
+  const [openKeys, setOpenKeys] = useState([]);
+  const onOpenChange = (keys) => {
+    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+    if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+      setOpenKeys(keys);
+    } else {
+      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+    }
+  };
+  let history = useHistory()
   const pid = store.getState().user.role
   const filterAsyncRoutes=(routes, permissions)=> {
     const res = []
@@ -25,6 +33,14 @@ function menuItem(props) {
       route = { ...route }
       const children = route.children
       if (!route.meta || children) {
+        route.label = route?.meta?.title || route.title
+        if(route.label==='首页'){
+          route.icon =<Icon icon={route?.icon} />
+        }else{
+          route.icon = <Icon icon={route?.meta?.icon} />
+
+        }
+        route.key =route.path
         if (children) {
           const accessedChild = filterAsyncRoutes(children, permissions)
           if (accessedChild.length) {
@@ -35,84 +51,35 @@ function menuItem(props) {
           res.push(route)
         }
       } else if (permissions.includes(route.meta.permission)) {
+        route.label = route?.meta?.title || route.title
+        if(route.label==='首页'){
+          route.icon =<Icon icon={route?.icon} />
+        }
+        route.icon = <Icon icon={route?.meta?.icon} />
+        route.icon = <Icon icon={route?.meta?.icon} />
+        route.key =route.path
         res.push(route)
       }
     })
     return res
   }
   const arr = filterAsyncRoutes(asyncRouters,pid)
-  let location = useLocation()
-  let activeMenu = location.pathname
-  let pathNameArr = location.pathname.substring(1).split('/')
-  pathNameArr[0] = '/' + pathNameArr[0]
-  const resolvePath = (basePath, routePath) => {
-    if (isExternal(routePath)) {
-      return routePath
-    }
-    if (isExternal(basePath)) {
-      return basePath
-    }
-    return path.resolve(basePath, routePath)
-  }
-  let onlyOneChild = null
-  let showSidebarItem = (children = [], parent) => {
-    const showingChildren = children.filter((item) => {
-      if (item.hidden) {
-        return false
-      } else {
-        onlyOneChild = item
-        return true
-      }
-    })
-    if (showingChildren.length === 1 && !parent?.alwaysShow) {
-      return true
-    }
-    if (showingChildren.length === 0) {
-      onlyOneChild = { ...parent, path: '', noChildren: true }
-      return true
-    }
-    return false
-  }
-
-  const renderSideMenu = (item, basePath) => {
-    if (item.hidden) return ''
-    if (showSidebarItem(item.children, item)) {
-      return (
-        <Menu.Item
-          icon={<Icon icon={item.meta?.icon || onlyOneChild.meta?.icon} />}
-          key={resolvePath(basePath, onlyOneChild.path)}
-        >
-          <Link to={resolvePath(basePath, onlyOneChild.path)}>
-            <span className="nav-text">{onlyOneChild.meta?.title}</span>
-          </Link>
-        </Menu.Item>
-      )
-    } else {
-      return (
-        <SubMenu
-          icon={<Icon icon={item.meta?.icon || onlyOneChild.meta?.icon} />}
-          key={item.path}
-          title={item.meta.title}
-        >
-          {item.children.map((child) => {
-            return renderSideMenu(child, resolvePath(basePath, child.path))
-          })}
-        </SubMenu>
-      )
-    }
+  console.log(arr,'arr');
+  const onClick = (MenuItem) => {
+    if(MenuItem.key==='/') return  history.push('/')
+    history.push(MenuItem.keyPath[1]+MenuItem.keyPath[0])
   }
   return (
     <Menu
-      defaultOpenKeys={pathNameArr}
+      openKeys={openKeys}
+      onOpenChange={onOpenChange}
       inlineCollapsed={!props.opened}
       inlineIndent="10"
       mode="inline"
-      selectedKeys={[activeMenu]}
       theme="dark"
+      items={arr}
+      onClick={onClick}
     >
-      {arr.map((route) => {
-        return renderSideMenu(route, route.path)
-      })}
     </Menu>
   )
 }

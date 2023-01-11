@@ -2,18 +2,18 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2023-01-06 14:59:51
+ * @LastEditTime: 2023-01-10 14:41:17
  * @LastEditors: kun.xu
  */
 // eslint-disable-next-line no-use-before-define
 import React,{useState,useEffect} from 'react'
 import { connect } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { Dropdown, Menu, message } from 'antd'
+import { Dropdown, Menu, message, Space } from 'antd'
 import './Navbar.scss'
 import Hamburger from '../Hamburger'
 import Breadcrumb from '../Breadcrumb'
-import { CaretDownOutlined } from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import { A_logout } from '@/store/actions'
 import store from '@/store'
 function Navbar(props) {
@@ -31,28 +31,24 @@ function Navbar(props) {
   useEffect(()=>{
     setUsername(store.getState().user.name)
   })
-  const menu = () => (
-    <Menu>
-      <Menu.Item key="0">
-        <a href="/">首页</a>
-      </Menu.Item>
-      {/*
-      <Menu.Item key="1">
-        <a href="https://github.com/jzfai/react-admin-template" target="_blank">
-          Github
+  const items = [
+    {
+      key: '1',
+      label: (
+        <a rel="noopener noreferrer" href="/">
+          首页
         </a>
-      </Menu.Item>
-      <Menu.Item key="2">
-        <a href="https://github.com/jzfai/react-admin-template" target="_blank">
-          Docs
-        </a>
-      </Menu.Item> */}
-      <Menu.Divider />
-      <Menu.Item key="3" onClick={loginOut}>
-        退出登录
-      </Menu.Item>
-    </Menu>
-  )
+      )
+    },
+    {
+      key: '2',
+      label: (
+        <span onClick={loginOut}>
+          退出登录
+        </span>
+      )
+    }
+  ];
   return (
     <div className="navbar rowBC">
       <div className="rowSC">
@@ -61,17 +57,15 @@ function Navbar(props) {
       </div>
       {/* 下拉退出登录*/}
       <div className="mr-1">
-        {/* <Dropdown className="rowSE" overlay={menu} trigger={['click']}> */}
-        <Dropdown className="rowSE" menu={menu} trigger={['click']}>
-          {/* <CaretDownOutlined className="mlPx-6 font-sizePx12" style={{ color: '#000' }} /> */}
-          <a className="ant-dropdown-link avatar-wrapper" onClick={(e) => e.preventDefault()}>
-          <span className="userName">{username}</span>
-            {/* <img
-              className="user-avatar"
-              src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80"
-            /> */}
-            {' '}
-            <CaretDownOutlined className="mlPx-6 font-sizePx12" style={{ color: '#000' }} />
+        <Dropdown
+          trigger={['click']}
+          menu={{items}}
+        >
+          <a onClick={(e) => e.preventDefault()}>
+          <Space>
+            <span className="userName">{username}</span>
+            <DownOutlined />
+          </Space>
           </a>
         </Dropdown>
       </div>
