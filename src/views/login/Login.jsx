@@ -1,3 +1,10 @@
+/*
+ * @Description:
+ * @Author: kun.xu
+ * @Date: 2022-12-12 16:55:01
+ * @LastEditTime: 2023-01-16 10:12:14
+ * @LastEditors: kun.xu
+ */
 // eslint-disable-next-line no-use-before-define
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
@@ -14,6 +21,7 @@ function Login(props) {
     props
       .A_login(values)
       .then(() => {
+        sessionStorage.setItem('userExpireAlarmOpen', '1')
         message.success('登录成功')
       })
       .catch(() => {
@@ -22,7 +30,7 @@ function Login(props) {
       })
   }
   if (props.token) {
-    return <Redirect to="/dashboard" />
+    return <Redirect to="/" />
   }
   return (
     <div className="login-container columnCC">

@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2023-01-10 16:51:39
+ * @LastEditTime: 2023-01-17 13:56:31
  * @LastEditors: kun.xu
  */
 // eslint-disable-next-line no-use-before-define
@@ -64,7 +64,6 @@ function menuItem(props) {
     return res
   }
   const arr = filterAsyncRoutes(asyncRouters,pid)
-  console.log(arr,'arr');
   const onClick = (MenuItem) => {
     if(MenuItem.key==='/') return  history.push('/')
     history.push(MenuItem.keyPath[1]+MenuItem.keyPath[0])

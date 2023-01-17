@@ -38,3 +38,19 @@
     margin-left: 0;
   }
 }
+
+.thirtyList{
+  width: 700px !important;
+  height: 88%;
+  .ant-modal-content{
+    height: 100%;
+  }
+}
+.thirtyListTableTitle{
+  margin-top: 30px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.thirtyListTable{
+  margin-top: 20px;
+}

@@ -35,7 +35,8 @@ export default ({ command }) => {
       //proxy look for https://vitejs.cn/config/#server-proxy
       proxy: {
         '/api': {
-          target: 'http://10.253.50.11:9527/',
+          // target: 'http://10.253.50.11:9527/',
+          target: 'http://10.253.47.67:8586/',
           changeOrigin: true
           // rewrite: (path) => path.replace(/^\/api/, '')
         }

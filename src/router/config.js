@@ -1,6 +1,4 @@
 // import React from 'react'
-// import Layout  from '@/layout/index'
-// console.log(Layout,'layout');
 export const constantRoutes = [
   {
     path: '/404',
@@ -124,27 +122,15 @@ export const asyncRouters = [
   {
     path: '/',
     redirect: '/home',
-    // icon: 'home',
     permission: 'p_0_0',
     title: '首页',
+    component: () => import('@/views/home/index'),
     icon:'home'
-    // children:
-    // [
-      //   {
-        //     path: 'home',
-        //     component: () => import('@/views/home/index'),
-        //     name: 'Home',
-        //     meta: {
-        //   affix: true
-        // }
-    //   }
-    // ]
   },
   {
     path: '/sys-account-manage',
     redirect: 'noRedirect',
     meta: { title: '系统账户管理', icon: 'sysUser', breadcrumb: true, permission: 'p_1_0' },
-    // alwaysShow: true,
     children:
     [
       {
@@ -165,7 +151,6 @@ export const asyncRouters = [
     path: '/system-monitoring',
     redirect: 'noRedirect',
     meta: { title: '系统监控', icon: 'monitor', breadcrumb: true, permission: 'p_2_0' },
-    // alwaysShow: true,
     children:
     [
       {
@@ -184,8 +169,8 @@ export const asyncRouters = [
       {
         path: '/global',
         redirect: 'noRedirect',
+        component: () => import('@/views/global/index'),
         meta: { title: '全局监控', permission: 'p_2_2' }
-        // target: true
       },
       // {
       //   path: '/globalTwo',
@@ -228,7 +213,6 @@ export const asyncRouters = [
       breadcrumb: true,
       permission: 'p_6_0'
     },
-    // alwaysShow: true,
     children: [
       {
         path: '/calendar',
@@ -242,7 +226,6 @@ export const asyncRouters = [
     path: '/operator',
     redirect: 'noRedirect',
     meta: { title: '用户管理', icon: 'user', breadcrumb: true, permission: 'p_3_0' },
-    // alwaysShow: true,
     children:
     [
       {
@@ -263,7 +246,6 @@ export const asyncRouters = [
     path: '/data-report',
     redirect: 'noRedirect',
     meta: { title: '数据报表', icon: 'chart', breadcrumb: true, permission: 'p_4_0' },
-    // alwaysShow: true,
     children:
     [
       {
@@ -289,10 +271,8 @@ export const asyncRouters = [
   {
     path: '/log-management',
     redirect: 'noRedirect',
-    meta: { title: '日志管理', icon: 'log', breadcrumb: true, permission: 'p_5_0' },
-    // alwaysShow: true,
-    children:
-    [
+    meta: { title: '日志管理', icon: 'log'},
+    children:[
       {
         path: '/operation-log',
         component: () => import('@/views/operationLog/index'),
@@ -307,6 +287,9 @@ export const asyncRouters = [
       }
     ]
   },
-
-  { path: '*', redirect: '/404', hidden: true,component: () => import('@/views/error-page/404') }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true,
+    component: () => import('@/views/error-page/404') }
 ]

@@ -2,11 +2,11 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2023-01-10 16:59:25
+ * @LastEditTime: 2023-01-17 13:56:17
  * @LastEditors: kun.xu
  */
 // eslint-disable-next-line no-use-before-define
-import React, { Fragment, useEffect,useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 /*其他引入*/
@@ -39,7 +39,6 @@ function RenderRouterHook() {
   )
   const renderRouterFunc = (asyncRouter, uPath) => {
     for (const item of asyncRouter) {
-      // console.log(item,uPath,'item');
       if (item.hasOwnProperty('children')) {
         item.children.forEach((fItem) => {
           if(!pid.includes(fItem.meta.permission)){
@@ -51,26 +50,20 @@ function RenderRouterHook() {
                 component={asyncImport(fItem.component)}
                 exact
                 key={fItem.path}
-                path={resolvePath(item.path, fItem.path)}
+                path={item.path+fItem.path}
               />
             )
-            if (fItem.hasOwnProperty('children')) {
-              renderRouterFunc(fItem.children, resolvePath(item.path, fItem.path))
-            }
           }
         })
-      } else {
-        if(!pid.includes(item?.meta?.permission)&&item.path!=='*'){
-          return
-        }else{
+      } else
+        {
           routerArr.push(
             <Route component={asyncImport(item.component)} exact key={item.path} path={resolvePath(uPath, item.path)} />
           )
         }
+        if (item.redirect) routerArr.push(<Redirect exact={true} path={item.path} to={item.redirect} />)
       }
-      if (item.redirect) routerArr.push(<Redirect exact={true} path={item.path} to={item.redirect} />)
     }
-  }
   useEffect(() => {
     renderRouterFunc(asyncRouters, '/')
     // setRes([...arr])

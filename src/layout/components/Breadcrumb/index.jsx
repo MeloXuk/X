@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2023-01-11 10:31:23
+ * @LastEditTime: 2023-01-17 13:40:20
  * @LastEditors: kun.xu
  */
 /* react redux */
@@ -22,6 +22,7 @@ function index() {
   const [breadName,setBreadName] = useState([])
   const handleRoutes = (arr) =>{
     let res = []
+    let newArr = []
     arr.forEach(item=>{
       if(!item.children){
         res.push(item)
@@ -32,14 +33,17 @@ function index() {
         })
       }
     })
-    let newArr = []
     if(subTitle==='/') {
       newArr.push({meta:{title:'首页'},path:'/'})
       setBreadName(newArr)
       return
-    }else{
-      newArr.push(res.filter(item=>item.path===mainTitle)[0])
-      newArr.push(res.filter(item=>item.path===subTitle)[0])
+    }else {
+      if(res.find(item => item.path === mainTitle) ===undefined || res.find(item => item.path === subTitle) ===undefined) {
+        newArr.push({meta:{title:'错误页面'},path:'/404'})
+      } else {
+        newArr.push(res.filter(item=>item.path===mainTitle)[0])
+        newArr.push(res.filter(item=>item.path===subTitle)[0])
+      }
       setBreadName(newArr)
     }
   }
