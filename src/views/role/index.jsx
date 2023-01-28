@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Button, Form, Input, Col, Row, Table, Space, notification, Modal } from 'antd'
 import { CheckCircleTwoTone, ExclamationCircleFilled  } from '@ant-design/icons';
 import Edit from './components/Edit'
 import { getRoles, getPermissions, deleteRole } from '@/api/role'
 import "./role.scss"
 export default function Role() {
+  useSelector((state) => {
+     console.log(state,'state');
+  });
+
   const [form] = Form.useForm();
   const { confirm } = Modal;
   const [roleList,setRoleList] = useState([])

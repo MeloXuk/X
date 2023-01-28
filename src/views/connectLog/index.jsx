@@ -2,16 +2,108 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-11-12 10:17:31
- * @LastEditTime: 2022-11-22 15:36:14
+ * @LastEditTime: 2023-01-28 17:32:25
  * @LastEditors: kun.xu
  */
 
-import React from 'react';
+import React, { useRef } from 'react'
+import { Button } from 'antd'
+import Table from '@/components/cellTable'
+// import './demo.css'
 
-export default function ConnectLog() {
-  return (
-    <div>
-      ConnectLog
-    </div>
-  );
+const ConnectLog = () => {
+  const permission = ["handle", "pass", "refuse", "reApply", 'export'], Enum = {
+    CREATED: '代办理',
+    PASS: '待审批',
+    REJECT: '驳回',
+    REFUSE: '拒绝'
+  };
+
+  const statisticFormat = val => val.map((t, idx) => <span key={idx} style={{marginRight: '5px'}}>{t.total}</span>)
+
+  const columns = [
+    { title: '姓名', dataIndex: 'name', key: 'name', type: 'Link', url: 'https://www.baidu.com' },
+    { title: '身份证号/年龄', dataIndex: 'ID', key: 'ID', colSpan: 2 },
+    { title: '年龄', dataIndex: 'age', key: 'age', colSpan: 0 },
+    { title: '状态', dataIndex: 'status', key: 'status', type: 'Enum', Enum, merge: (v, index) => {
+      const obj = {
+        children: v,
+        props: {}
+      };
+
+      if (index != 2) {
+        return v;
+      }
+      //从第二行开始合并，合并两列 - index从0开始，colSpan代表合并行。
+      if (index === 2) {
+        obj.props.colSpan = 2;
+      }
+      return obj;
+    }},
+    { title: '规则', dataIndex: 'rule', key: 'rule', merge: (v, index) => {
+      const obj = {
+        children: v,
+        props: {}
+      };
+      //从第二行开始合并，合并两列 - index从0开始，colSpan代表合并行。
+      if (index === 2) {
+        obj.props.colSpan = 0;
+      }
+      return obj;
+    }},
+    { title: '预警统计', dataIndex: 'statistic', key: 'statistic', type: 'Format', format: statisticFormat },
+    { title: '存款', dataIndex: 'money', key: 'money', type: 'Currency', merge: (v, index) => {
+      const obj = {
+        children: v,
+        props: {}
+      };
+      //从第二行开始合并，合并两行 - index从0开始，rowSpan代表合并列，rowSpan = 2代表合并两列，即将存款列的第二行和第三行合并
+      if (index === 1) {
+        obj.props.rowSpan = 2;
+      }
+      //colSpan或者rowSpan设值为0时，设置的表格不会渲染，即表格数据不会展示出来。这段代码的意思是第三行的数据不展示并将第三行合并到第二行
+      if (index === 2) {
+        obj.props.rowSpan = 0;
+      }
+      return obj;
+    }},
+    { title: '日期', dataIndex: 'date', key: 'date', type: 'Date'},
+    { title: '操作', dataIndex: 'action', key: 'action', type: 'Action', value: [
+      {label: "查看", click: data => {console.log(data)}},
+      {label: "办理", click: data => {}, filter: ({status}) => status == 'CREATED' && permission.some(n => n == 'handle')},
+      {label: "通过", click: data => {}, filter: ({status}) => status == 'PASS' && permission.some(n => n == 'pass')},
+      {label: "驳回", click: data => {}, filter: ({status}) => status == 'REJECT' && permission.some(n => n == 'reject')},
+      {label: "拒绝", click: data => {}, filter: ({status}) => status == 'CREATED' && permission.some(n => n == 'refuse')},
+      {label: "重新付款", click: data => {}, filter: ({status}) => status == 'REAPPLY' && permission.some(n => n == 'reApply')}
+    ]}
+  ]
+
+  const dataSource = [
+    {key: 1, name: '小坏', ID: 'abc', age: 20, status: 'CREATED', rule: '标准', date: 1596791666000, statistic: [{level: 3, total: 5}, {level: 2, total: 7}, {level: 1, total: 20}, {level: 0, total: 0}], money: 200000000000},
+    {key: 2, name: 'tnnyang', ID: 'def', age: 18, status: 'PASS', rule: '个性化', date: 1596791666000, statistic: [],  money: 2568912357893},
+    {key: 3, name: 'xiaohuai', ID: 'ghi', status: 'REJECT', rule: '标准', statistic: [], money: 6235871},
+    {key: 4, name: '陈公子', ID: 'jkl', age: 21, status: 'REAPPLY', rule: '个性化', date: 1596791666000, statistic: []}
+  ]
+
+  const config = {
+    columns,
+    dataSource,
+    getCheckboxProps: record => {return {disabled: record.status == 'REJECT'}},  //table表格rowSelection的禁用
+    bordered: true
+  }
+
+  //点击获取通过checkbox复选框选中的表格
+  const childRef = useRef();
+  const getTableChecked = () => {
+    const selectedRowKeys = childRef.current.getSelectedRowKeys(), selectedRows = childRef.current.getSelectedRows();
+    console.log(selectedRowKeys)
+    console.log(selectedRows)
+  }
+
+  return <div style={{margin: '20px'}}>
+    <Table {...config} cRef={childRef} />
+    <Button type="primary" onClick={getTableChecked}>获取选择的列表项</Button>
+  </div>
 }
+
+export default ConnectLog
