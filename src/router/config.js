@@ -1,6 +1,10 @@
 // import React from 'react'
 export const constantRoutes = [
   {
+    path: '/ceshi',
+    component: () => import('@/views/ceshi/index.jsx')
+  },
+  {
     path: '/404',
     component: () => import('@/views/error-page/404'),
     hidden: true
@@ -15,12 +19,12 @@ export const asyncRouters = [
   //   meta: { title: '全局监控', permission: 'p_2_2' },
   //   hidden: true
   // },
-  {
-    path: '/chartOne',
-    component: () => import('@/views/detail/components/chartOne.jsx'),
-    meta: { title: '明细监控', permission: 'p_2_2' },
-    hidden: true
-  },
+  // {
+  //   path: '/chartOne',
+  //   component: () => import('@/views/detail/components/chartOne.jsx'),
+  //   meta: { title: '明细监控', permission: 'p_2_2' },
+  //   hidden: true
+  // },
 
   {
     path: '/',

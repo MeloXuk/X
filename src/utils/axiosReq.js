@@ -37,6 +37,7 @@ service.interceptors.request.use(
     return req
   },
   (err) => {
+    console.log(err,'err');
     Promise.reject(err)
   }
 )

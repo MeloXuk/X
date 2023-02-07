@@ -2,13 +2,14 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2022-12-20 14:29:26
+ * @LastEditTime: 2023-01-30 15:44:59
  * @LastEditors: kun.xu
  */
 import * as types from '../action-types'
 import { getInfoReq } from '@/api/user'
 import { setToken, removeToken } from '@/utils/auth'
 import { loginReq, logoutReq } from '@/api/user'
+import { getBg } from '@/api/common'
 
 export const A_USER_TOKEN = (data) => {
   return {
@@ -29,6 +30,30 @@ export const A_resetUser = () => {
     type: types.USER_RESET
   }
 }
+
+// export const bg = (data) => {
+//   return {
+//     types:types.GET_BG,
+//     data
+//   }
+// }
+
+// export const A_getBg = (data) =>async (dispatch) => {
+//   return new Promise((resolve,reject) => {
+//     getBg()
+//     .then((res)=>{
+//       if(res){
+//         dispatch(A_USER_TOKEN(res))
+//         console.log(res);
+//       }else{
+//         reject()
+//       }
+//     })
+//     .catch((error) => {
+//       reject(error)
+//     })
+//   })
+// }
 
 export const A_login = (reqData) => (dispatch) => {
   return new Promise((resolve, reject) => {

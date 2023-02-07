@@ -2,7 +2,7 @@
  * @Description:
  * @Author: kun.xu
  * @Date: 2022-12-12 16:55:01
- * @LastEditTime: 2022-12-20 14:29:23
+ * @LastEditTime: 2023-01-30 10:03:30
  * @LastEditors: kun.xu
  */
 import * as types from '../../action-types'
@@ -22,6 +22,11 @@ export default function user(state = userInfo, action) {
       }
     case types.USER_USER_INFO:
       return {
+        ...state,
+        ...action.data
+      }
+    case types.GET_BG:
+      return{
         ...state,
         ...action.data
       }
